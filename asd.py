@@ -180,16 +180,14 @@ def find_isomorphic_subgraph(graph_g: nx.Graph, graph_h: nx.Graph):
 
 
 if __name__ == '__main__':
-    while True:
-        # g = generate_and_save_random_network_graph(20, 5, 10, 1, 5, "grand.json")
-        # generate_and_save_random_workload_graph(6, 1, 10, "wrand.json")
+    # g = generate_and_save_random_network_graph(20, 5, 10, 1, 5, "grand.json")
+    # generate_and_save_random_workload_graph(6, 1, 10, "wrand.json")
 
-        g = load_graph('g3.json')
-        w = load_graph('w1.json')
-        match_graph, match_mapping = find_isomorphic_subgraph(g, w)
+    g = load_graph('g1.json')
+    w = load_graph('w3.json')
+    match_graph, match_mapping = find_isomorphic_subgraph(g, w)
 
-        if match_graph is None:
-            print("No isomorphic subgraph found")
-        else:
-            print(match_mapping)
-            break
+    if match_graph is None:
+        print("No isomorphic subgraph found")
+    else:
+        print(match_mapping)
