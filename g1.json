@@ -1,4 +1,6 @@
 {
+  "dim": 15,
+  "node_size": 1300,
   "graph": {
     "directed": false,
     "multigraph": false,
