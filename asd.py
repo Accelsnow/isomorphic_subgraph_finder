@@ -39,7 +39,7 @@ def generate_and_save_random_network_graph(num_nodes, min_node_weight, max_node_
     :return: generated network graph
     """
     dim = 15
-    node_size = 1300
+    node_size = 2600
     graph = nx.Graph()
 
     # Generate random weights for nodes and add nodes to the graph
@@ -68,7 +68,7 @@ def generate_and_save_random_network_graph(num_nodes, min_node_weight, max_node_
         json.dump(data, f)
 
     display_graph(graph, position, node_size, dim)
-    return graph
+    return graph, position, node_size, dim
 
 
 def generate_and_save_random_workload_graph(num_nodes, min_node_weight, max_node_weight, file_name):
@@ -84,7 +84,7 @@ def generate_and_save_random_workload_graph(num_nodes, min_node_weight, max_node
     :return: generated graph
     """
     dim = 15
-    node_size = 1300
+    node_size = 2600
     graph = nx.Graph()
 
     # Generate random weights for nodes and add nodes to the graph
@@ -127,7 +127,7 @@ def generate_and_save_random_workload_graph(num_nodes, min_node_weight, max_node
         json.dump(data, f)
 
     display_graph(graph, position, node_size, dim)
-    return graph
+    return graph, position, node_size, dim
 
 
 def load_graph(json_file):
@@ -157,7 +157,7 @@ def load_graph(json_file):
     position = {node: (data['pos'][node][0], data['pos'][node][1]) for node in data['pos']}
 
     display_graph(graph, position, node_size, dim)
-    return graph
+    return graph, position, node_size, dim
 
 
 def find_isomorphic_subgraph(graph_g: nx.Graph, graph_h: nx.Graph):
@@ -179,15 +179,44 @@ def find_isomorphic_subgraph(graph_g: nx.Graph, graph_h: nx.Graph):
     return None, {}
 
 
+def display_schedule_graph(graph, position, node_size, dim, subgraph, subgraph_mapping):
+    plt.figure(figsize=(dim, dim))
+
+    other_nodes = [node for node in graph.nodes() if node not in subgraph.nodes()]
+    node_labels = {node: f"{node}\n{graph.nodes[node]['weight']}" for node in other_nodes}
+    for node in subgraph.nodes():
+        node_labels[node] = f"{node}/{subgraph_mapping[node]}\n{graph.nodes[node]['weight']}"
+
+    nx.draw_networkx_nodes(graph, position, nodelist=other_nodes, node_size=node_size, node_shape='o',
+                           node_color='white', edgecolors='black')
+    nx.draw_networkx_nodes(graph, position, nodelist=subgraph.nodes(), node_size=node_size, node_shape='o',
+                           node_color='white', edgecolors='red', linewidths=2)
+    nx.draw_networkx_labels(graph, position, labels=node_labels, font_size=12, font_color='black', font_weight='bold')
+
+    other_edges = [edge for edge in graph.edges() if edge not in subgraph.edges()]
+    nx.draw_networkx_edges(graph, position, edgelist=other_edges, width=2, edge_color='black')
+    nx.draw_networkx_edges(graph, position, edgelist=subgraph.edges(), width=4, edge_color='red')
+
+    edge_labels = nx.get_edge_attributes(graph, 'weight')
+    nx.draw_networkx_edge_labels(graph, position, edge_labels=edge_labels, font_size=12)
+
+    # Show the plot
+    plt.title("Network Graph")
+    plt.axis('off')
+    plt.show()
+
+
 if __name__ == '__main__':
     # g = generate_and_save_random_network_graph(20, 5, 10, 1, 5, "grand.json")
     # generate_and_save_random_workload_graph(6, 1, 10, "wrand.json")
-
-    g = load_graph('g1.json')
-    w = load_graph('w3.json')
+    g, gpos, gnode_size, gdim = load_graph('g3.json')
+    w, wpos, wnode_size, wdim = load_graph('w3.json')
+    load_graph('w1.json')
+    load_graph('w2.json')
     match_graph, match_mapping = find_isomorphic_subgraph(g, w)
 
     if match_graph is None:
         print("No isomorphic subgraph found")
     else:
         print(match_mapping)
+        display_schedule_graph(g, gpos, gnode_size, gdim, match_graph, match_mapping)

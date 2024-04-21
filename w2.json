@@ -1,6 +1,6 @@
 {
   "dim": 15,
-  "node_size": 1300,
+  "node_size": 2600,
   "graph": {
     "directed": false,
     "multigraph": false,
@@ -31,11 +31,11 @@
         "id": "n5"
       },
       {
-        "weight": 0,
+        "weight": 1,
         "id": "S"
       },
       {
-        "weight": 0,
+        "weight": 1,
         "id": "E"
       }
     ],
